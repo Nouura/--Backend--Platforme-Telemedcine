@@ -1,6 +1,7 @@
 package com.mycompany.platforme_telemedcine.Services.ImpService;
 
 import com.mycompany.platforme_telemedcine.Models.User;
+import com.mycompany.platforme_telemedcine.Models.UserRole;
 import com.mycompany.platforme_telemedcine.Repository.UserRepository;
 import com.mycompany.platforme_telemedcine.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public User getUserByRole(String role) {
+    public User getUserByRole(UserRole role) {
         return userRepository.findByRole(role);
     }
 

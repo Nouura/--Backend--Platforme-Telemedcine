@@ -11,8 +11,11 @@ public class User {
     private String name;
     private String prenom;
     private String email;
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
     private String password;
+    @Column(nullable = true)
+    private Integer age;
 
 
     public String getPrenom() {
@@ -47,11 +50,11 @@ public class User {
         this.email = email;
     }
 
-    public String getRole() {
+    public UserRole getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
 
@@ -61,5 +64,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
     }
 }
