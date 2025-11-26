@@ -18,14 +18,19 @@ import java.util.Map;
 public class RendezVousRestController {
 
     @Autowired
-    RendezVousService rendezVousService;
+    private RendezVousService rendezVousService;
 
     @Autowired
-    PatientService patientService;
+    private PatientService patientService;
+
     @Autowired
-    MedecinService medecinService;
+    private MedecinService medecinService;
+
     @Autowired
-    ConsultationService consultationService;
+    private ConsultationService consultationService;
+
+    @Autowired
+    private NotificationController notificationController;
 
 
     @PostMapping("/add/{patientId}/{medecinId}")
@@ -33,11 +38,12 @@ public class RendezVousRestController {
             @RequestBody RendezVous rendezVous,
             @PathVariable Long patientId,
             @PathVariable Long medecinId) {
-        try{
-            if (rendezVous.getDate() == null) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
 
+        if (rendezVous.getDate() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        try {
             Patient patient = patientService.getPatientById(patientId);
             Medecin medecin = medecinService.getMedecinById(medecinId);
 
@@ -45,33 +51,50 @@ public class RendezVousRestController {
             rendezVous.setMedecin(medecin);
 
             RendezVous saved = rendezVousService.createRendezvous(rendezVous);
+
+            String message = "Nouveau rendez-vous demandé par " + patient.getName();
+            notificationController.sendNotificationToMedecin(medecinId, message);
+
             return new ResponseEntity<>(saved, HttpStatus.CREATED);
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
 
     @PostMapping("/add2/{patientId}/{medecinId}/{consultationId}")
     public ResponseEntity<RendezVous> addRendezVousWithConsultation(
             @RequestBody RendezVous rendezVous,
-            @PathVariable Long consultationId, @PathVariable Long patientId, @PathVariable Long medecinId) {
-        try{
+            @PathVariable Long consultationId,
+            @PathVariable Long patientId,
+            @PathVariable Long medecinId) {
+
+        try {
             Patient patient = patientService.getPatientById(patientId);
             Medecin medecin = medecinService.getMedecinById(medecinId);
             Consultation consultation = consultationService.getConsultationById(consultationId);
+
             rendezVous.setConsultation(consultation);
             rendezVous.setPatient(patient);
             rendezVous.setMedecin(medecin);
+
             RendezVous saved = rendezVousService.createRendezvous(rendezVous);
+
+            String message = "Nouveau rendez-vous avec consultation demandé par " + patient.getName();
+            notificationController.sendNotificationToMedecin(medecinId, message);
+
             return new ResponseEntity<>(saved, HttpStatus.CREATED);
 
-        }catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+
+
+
 
 
     @GetMapping
