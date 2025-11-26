@@ -53,6 +53,9 @@ public class RendezVousRestController {
             RendezVous saved = rendezVousService.createRendezvous(rendezVous);
 
             String message = "Nouveau rendez-vous demandé par " + patient.getName();
+            System.out.println("📅 Rendez-vous créé - Patient: " + patient.getName() + " (ID: " + patientId + ")");
+            System.out.println("👨‍⚕️ Médecin ID: " + medecinId);
+            System.out.println("📤 Envoi de notification...");
             notificationController.sendNotificationToMedecin(medecinId, message);
 
             return new ResponseEntity<>(saved, HttpStatus.CREATED);
