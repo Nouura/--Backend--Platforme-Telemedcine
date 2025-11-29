@@ -12,6 +12,7 @@ public class RendezVous {
     private Long id;
     private LocalDate date;
     private String description;
+    private String time;
 
     @Enumerated(EnumType.STRING)
     private StatusRendezVous status = StatusRendezVous.PENDING;
@@ -38,6 +39,14 @@ public class RendezVous {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public String getDescription() {

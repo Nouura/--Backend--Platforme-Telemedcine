@@ -153,6 +153,7 @@ public class RendezVousRestController {
 
             // Update fields
             if (updatedData.getDate() != null) rdv.setDate(updatedData.getDate());
+            if (updatedData.getTime() != null) rdv.setTime(updatedData.getTime());
             if (updatedData.getDescription() != null) rdv.setDescription(updatedData.getDescription());
 
             RendezVous saved = rendezVousService.createRendezvous(rdv);

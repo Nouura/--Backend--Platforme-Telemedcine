@@ -13,7 +13,6 @@ public class CorsConfig {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         
-        // CORS config for WebSocket endpoints
         CorsConfiguration wsConfig = new CorsConfiguration();
         wsConfig.addAllowedOrigin("http://localhost:5173");
         wsConfig.addAllowedOrigin("http://localhost:5174");
@@ -23,7 +22,6 @@ public class CorsConfig {
         wsConfig.setAllowCredentials(true);
         source.registerCorsConfiguration("/ws/**", wsConfig);
         
-        // CORS config for all other endpoints
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOrigin("http://localhost:5173");
         config.addAllowedOrigin("http://localhost:5174");

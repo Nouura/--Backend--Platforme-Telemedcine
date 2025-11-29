@@ -11,7 +11,6 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // Allow specific origins for WebSocket with credentials support
         registry.addEndpoint("/ws")
                 .setAllowedOrigins("http://localhost:5173", "http://localhost:5174", "http://localhost:3000")
                 .withSockJS();
