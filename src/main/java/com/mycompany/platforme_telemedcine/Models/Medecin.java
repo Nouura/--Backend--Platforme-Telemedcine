@@ -16,6 +16,10 @@ public class Medecin extends User{
     @OneToMany(mappedBy = "medecin")
     private List<RendezVous> rendezVous;
 
+    @ManyToOne
+    @JoinColumn(name = "medecin_id") // Crée la clé étrangère dans la table consultation
+    private Medecin medecin;
+
     @ManyToMany
     @JoinTable(
                 name = "medecin_patients",
@@ -66,5 +70,11 @@ public class Medecin extends User{
         this.rendezVous = rendezVous;
     }
 
+    public Medecin getMedecin() {
+        return medecin;
+    }
 
+    public void setMedecin(Medecin medecin) {
+        this.medecin = medecin;
+    }
 }

@@ -9,4 +9,7 @@ public interface DossierMedicalService {
     DossierMedical getDossierMedicalById(Long id);
     void deleteDossierMedical(Long id);
     DossierMedical updateDossierMedical(DossierMedical dossierMedical);
+    List<DossierMedical> getDossiersByPatientId(Long id);
+    String getGeneratedFilename(Long id);
+    String extractFilenameFromUrl(String url);
 }

@@ -10,9 +10,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/dossier-medical")
@@ -90,30 +95,67 @@ public class DossierMedicalController {
     @GetMapping("/files/{filename}")
     public ResponseEntity<byte[]> downloadFile(@PathVariable String filename) {
         try {
-            System.out.println("Download request for file: " + filename);
+            System.out.println("=== DOWNLOAD REQUEST ===");
+            System.out.println("Requested filename: " + filename);
 
             byte[] fileContent = dossierMedicalService.getDocumentFile(filename);
 
             if (fileContent == null || fileContent.length == 0) {
-                System.out.println("File not found or empty: " + filename);
+                System.out.println("File not found, listing available files...");
+
+                // Debug: List all files in upload directory
+                Path uploadPath = Paths.get(dossierMedicalService.getUploadDir());
+                if (Files.exists(uploadPath)) {
+                    try (Stream<Path> paths = Files.walk(uploadPath, 1)) {
+                        System.out.println("Files in upload directory:");
+                        paths.filter(Files::isRegularFile)
+                                .forEach(path -> System.out.println("  - " + path.getFileName()));
+                    }
+                }
+
                 return ResponseEntity.notFound().build();
             }
 
-            System.out.println("File found, size: " + fileContent.length + " bytes");
-
             HttpHeaders headers = new HttpHeaders();
+
+            // Try to get the original filename from database
+            String originalFilename = dossierMedicalService.getOriginalFilenameByGeneratedName(filename);
+            if (originalFilename == null) {
+                originalFilename = filename;
+            }
+
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDispositionFormData("attachment", filename);
+            headers.setContentDispositionFormData("attachment", originalFilename);
             headers.setContentLength(fileContent.length);
 
             return new ResponseEntity<>(fileContent, headers, HttpStatus.OK);
 
-        } catch (IOException e) {
-            System.out.println("Error downloading file: " + e.getMessage());
-            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            System.out.println("Error in downloadFile: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
+
+
+    private void listAvailableFiles() {
+        try {
+            // Chemin de stockage (à adapter à votre configuration)
+            Path uploadPath = Paths.get("uploads");
+            if (Files.exists(uploadPath)) {
+                System.out.println("Available files in uploads directory:");
+                try (Stream<Path> paths = Files.walk(uploadPath)) {
+                    paths.filter(Files::isRegularFile)
+                            .forEach(path -> System.out.println("  - " + path.getFileName()));
+                }
+            } else {
+                System.out.println("Uploads directory does not exist: " + uploadPath.toAbsolutePath());
+            }
+        } catch (Exception e) {
+            System.out.println("Error listing files: " + e.getMessage());
+        }
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteDossierMedical(@PathVariable Long id) {

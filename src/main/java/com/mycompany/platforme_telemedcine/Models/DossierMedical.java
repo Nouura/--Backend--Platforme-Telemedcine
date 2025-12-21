@@ -29,6 +29,9 @@ public class DossierMedical {
     @Column(name = "upload_date")
     private LocalDateTime uploadDate;
 
+    @Column(name = "generated_file_name")
+    private String generatedFileName;
+
     // Constructeurs
     public DossierMedical() {}
 
@@ -39,6 +42,7 @@ public class DossierMedical {
         this.description = description;
         this.fileName = fileName;
         this.fileUrl = fileUrl;
+        this.generatedFileName = fileName;
         this.uploadDate = LocalDateTime.now();
     }
 
@@ -63,4 +67,7 @@ public class DossierMedical {
 
     public LocalDateTime getUploadDate() { return uploadDate; }
     public void setUploadDate(LocalDateTime uploadDate) { this.uploadDate = uploadDate; }
+
+    public String getGeneratedFileName() { return generatedFileName; }
+    public void setGeneratedFileName(String generatedFileName) { this.generatedFileName = generatedFileName; }
 }

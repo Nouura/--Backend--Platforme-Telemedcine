@@ -3,7 +3,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
-
 import com.mycompany.platforme_telemedcine.Models.Patient;
 import com.mycompany.platforme_telemedcine.Models.UserRole;
 import com.mycompany.platforme_telemedcine.Services.PatientService;

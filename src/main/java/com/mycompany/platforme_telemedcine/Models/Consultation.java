@@ -21,6 +21,9 @@ public class Consultation {
     @OneToOne
     Ordonance ordonance;
 
+    @ManyToOne // ou OneToOne selon votre logique
+    private Medecin medecin; // <--- C'est ce champ qui manque !
+
     public Long getId() {
         return id;
     }
@@ -31,6 +34,14 @@ public class Consultation {
 
     public Date getDate() {
         return date;
+    }
+
+    public Medecin getMedecin() {
+        return medecin;
+    }
+
+    public void setMedecin(Medecin medecin) {
+        this.medecin = medecin;
     }
 
     public void setDate(Date date) {
